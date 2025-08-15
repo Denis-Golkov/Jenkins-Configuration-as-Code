@@ -17,6 +17,7 @@ This project provides a ready-to-use Jenkins Docker image configured using Jenki
   - [Quick Start](#quick-start)
   - [Customization](#customization)
   - [Useful Docker Commands](#useful-docker-commands)
+    - [Just for Fun](#just-for-fun)
   - [Security Notice](#security-notice)
   - [References](#references)
 
@@ -37,9 +38,11 @@ This project provides a ready-to-use Jenkins Docker image configured using Jenki
 ```
 jcasc/
 ├── casc.yaml         # JCasC configuration file
+├── config.xml        # Jenkins job configuration for Demo job
 ├── Dockerfile        # Docker build instructions
 ├── init.groovy       # Groovy script for initial Jenkins setup
-└── plugins.txt       # List of Jenkins plugins to install
+├── plugins.txt       # List of Jenkins plugins to install
+└── run.sh            # Script to prepare files, build, and run Jenkins container
 ```
 
 ## Dockerfile Line-by-Line Explanation
@@ -64,22 +67,13 @@ ENV JENKINS_HOME=/var/jenkins_home
 **Tells Jenkins Configuration as Code (JCasC) plugin where to find the configuration file.**
 
 ```dockerfile
-ENV CASC_JENKINS_CONFIG /usr/share/jenkins/ref/casc.yaml
+ENV CASC_JENKINS_CONFIG /var/jenkins_home/casc.yaml
 ```
-**Copies your JCasC YAML configuration file into the image at the specified location.**
 
-```dockerfile
-COPY casc.yaml /usr/share/jenkins/ref/casc.yaml
-```
-**Copies a Groovy script for initial Jenkins setup (e.g., user creation) into the image.**
-
-```dockerfile
-COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/init.groovy
-```
 **Copies the list of plugins to install into the image.**
 
 ```dockerfile
-COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+COPY plugins.txt /var/jenkins_home/plugins.txt
 ```
 **Installs all plugins listed in `plugins.txt` using the Jenkins plugin CLI.**
 
@@ -92,23 +86,37 @@ RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 1. **Clone the repository** (if not already):
 
    ```bash
-   git clone https://github.com/yourusername/your-repo.git
-   cd your-repo/jcasc
+   git clone https://github.com/Denis-Golkov/Jenkins-Configuration-as-Code.git
+   cd Jenkins-Configuration-as-Code/
    ```
 
-2. **Build the Docker image:**
+
+2. **Run the setup script:**
+
+   The `run.sh` script prepares the Jenkins home directory, copies all necessary configuration files, sets permissions, builds the Docker image, and runs the Jenkins container. It also prints progress messages for each step:
+
+
+> **Note:** You must run `run.sh` with `sudo` to ensure it has the necessary permissions to set up directories and files for Jenkins. Also, make sure it is executable: `chmod +x run.sh`
 
    ```bash
-   docker build -t my-jenkins-jcasc .
+   sudo ./run.sh
    ```
 
-3. **Run the Jenkins container:**
+   Example output:
 
-   ```bash
-   docker run -d -p 8080:8080 --name jenkins-jcasc my-jenkins-jcasc
+   ```
+   Setting up Jenkins home directory permissions...
+   Copying casc.yaml to Jenkins home...
+   Copying init.groovy to Jenkins home...
+   Copying plugins.txt to Jenkins home...
+   Copying config.xml to Jenkins home...
+   Building Docker image jenkins:jcasc...
+   Running Jenkins container...
    ```
 
-4. **Access Jenkins:**
+  
+
+3. **Access Jenkins:**
 
    Open your browser and go to: [http://localhost:8080](http://localhost:8080)
 
@@ -125,17 +133,21 @@ RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
   Add or remove plugins in `plugins.txt`.
 - **Groovy Scripts:**  
   Modify `init.groovy` for custom initialization logic.
+- **Job Configuration:**  
+  Edit `config.xml` to change the configuration of the pre-created Demo job.
 
 ## Useful Docker Commands
 
-- View logs:  
-  `docker logs -f jenkins-jcasc`
-- Stop Jenkins:  
-  `docker stop jenkins-jcasc`
-- Remove container:  
-  `docker rm jenkins-jcasc`
+  `docker logs -f jenkins`
+  `docker stop jenkins`
+  `docker rm jenkins`
+  
+> **⚠️ Attention!**  
+> If you use the `clear.sh` script, it will delete **all** Docker images and containers on your system. Use it with caution!
 
 
+
+### Just for Fun
 <div align="center">
   <img src="resources/images/jenkins-funny.svg" alt="jenkins-funny" width="500">
 </div>
