@@ -1,0 +1,27 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>This is a DEMO </description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>pwd
+echo &apos;Hello From JCASC&apos;</command>
+      <configuredLocalRules/>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.plugins.chucknorris.CordellWalkerRecorder plugin="chucknorris@159.vdfe649cb_9c37">
+      <factGenerator/>
+    </hudson.plugins.chucknorris.CordellWalkerRecorder>
+  </publishers>
+  <buildWrappers/>
+</project>

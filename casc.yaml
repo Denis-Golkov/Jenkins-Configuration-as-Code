@@ -1,0 +1,18 @@
+jenkins:
+        systemMessage: "Jenkins configured automatically by Configuration as Code plugin"
+        numExecutors: 2
+        mode: NORMAL
+        scmCheckoutRetryCount: 0
+        labelString: "master-node"
+        securityRealm:
+          local:
+            allowsSignup: false
+            users:
+              - id: "admin"
+                password: "admin"
+        authorizationStrategy:
+          loggedInUsersCanDoAnything:
+            allowAnonymousRead: false
+        remotingSecurity:
+          enabled: true
+        crumbIssuer: null
